@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Ignore folders:
+model/FOB/crossval
+model/FOB/sim_est
+model/FSC/crossval
+model/FSC/sim_est
+data/
