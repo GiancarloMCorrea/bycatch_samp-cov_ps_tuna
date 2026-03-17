@@ -68,6 +68,16 @@ mydat3 %>% select(-Bycatch) %>% gt %>% data_color(
   locations = cells_column_labels(columns = everything())
 ) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp.png'))
 
+# Make unsampled data:
+mydat3 %>% gt %>% data_color(
+  columns = Trip_id,
+  target_columns = everything(),
+  palette = colpal[c(3,6)]
+) %>% tab_style(
+  style = cell_text(weight = "bold"),
+  locations = cells_column_labels(columns = everything())
+) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp_pred.png'))
+
 # Make observers data:
 mydat4 %>% gt %>% data_color(
   columns = Trip_id,
