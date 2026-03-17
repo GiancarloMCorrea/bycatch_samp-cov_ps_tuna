@@ -59,7 +59,7 @@ mydat3 %>% gt %>% data_color(
 ) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_samp.png'))
 
 # Make unsampled data:
-mydat3 %>% gt %>% data_color(
+mydat3 %>% select(-Bycatch) %>% gt %>% data_color(
   columns = Trip_id,
   target_columns = everything(),
   palette = colpal[c(3,6)]
