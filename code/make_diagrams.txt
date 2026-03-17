@@ -3,19 +3,30 @@ config:
   theme: redux
 ---
 flowchart TD
-    A("Observers data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_tuna_ps/main/figures/tab_obs.png'; width='30' />")
-    subgraph SIM1["<div style="width:30em; height:1.7em; display:flex; justify-content: flex-start; align-items:flex-end;">Repeat 100 times</div>"]
-    B("Randomly subset trips (%)")
-    C("Sampled data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_tuna_ps/main/figures/tab_samp.png'; width='30' />")
-    C1("Unsampled data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_tuna_ps/main/figures/tab_samp.png'; width='30' />")
-    C --> D["Model-based estimator"] & E["Ratio estimator"]
+    A("Observers data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_ps_tuna/main/figures/tab_obs.png'; width='30' />")
+    subgraph SIM1["<div style="width:45em; height:1.7em; display:flex; justify-content: flex-start; align-items:flex-end;">Repeat 100 times</div>"]
+    B("Subset trips (%)")
+    C1("Sampled data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_ps_tuna/main/figures/tab_samp.png'; width='30' />")
+    C2("Unsampled data<img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_ps_tuna/main/figures/tab_unsamp.png'; width='30' />")
+    C3("<br><img src='https://raw.githubusercontent.com/GiancarloMCorrea/bycatch_samp-cov_ps_tuna/main/figures/tab_unsamp_pred.png'; width='30' />")
+    C1 --> D["Fit sdmTMB model"]
+    E["Aggregate"]
+    F["Annual Bycatch Estimates"]
     end
-    A --> B --> C
+    A --- B
+    B --> C1 & C2
+    D -->|Predict bycatch| C3
+    C2 --> C3
+    C1 --- E
+    C3 --- E
+    E --> F
 
     %% Style: increase font size of ALL nodes
-    classDef big-font font-size:20px;
-    class A,B,C,D,E big-font;
-	
+    classDef big-font font-size:21px;
+    class A,B,C1,C2,C3,D,E,F big-font;
+    classDef join height:0,width:0;
+    class E,B join;
+
 	
 	
 ---

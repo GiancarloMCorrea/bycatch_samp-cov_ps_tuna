@@ -24,9 +24,13 @@ mydat2 = mydat %>% mutate(Bycatch = round(exp(rlnorm(n = 18, meanlog = 0.25, sdl
 mydat4 = mydat2 %>% filter(Trip_id %in% c(1,3,4,6)) %>% mutate(Bycatch = round(Bycatch*rnorm(n = 12, mean = 1, sd = 0.1), digits = 2))
 # Sampled data:
 mydat3 = mydat4 %>% filter(Trip_id %in% c(1,4))
+# Unsampled data (case 1):
+mydat5 = mydat4 %>% filter(Trip_id %in% c(3,6)) %>% mutate(Bycatch = round(Bycatch*rnorm(n = 6, mean = 1, sd = 0.1), digits = 2))
+# Unsampled data (case 2):
+mydat6 = mydat2 %>% filter(Trip_id %in% c(2,3,5,6))
 
 # Make figure 
-colpal = RColorBrewer::brewer.pal(n = 6, name = 'Set3')
+colpal = RColorBrewer::brewer.pal(n = 6, name = 'Pastel1')
 
 # Make effort data:
 mydat %>% gt %>% data_color(
@@ -36,7 +40,8 @@ mydat %>% gt %>% data_color(
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_eff.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_eff.png'))
 
 # Make simulated data:
 mydat2 %>% gt %>% data_color(
@@ -46,7 +51,19 @@ mydat2 %>% gt %>% data_color(
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_sim.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_sim.png'))
+
+# Case2: unsampled
+mydat6 %>% select(-Bycatch) %>% gt %>% data_color(
+  columns = Trip_id,
+  target_columns = everything(),
+  palette = colpal[c(2,3,5,6)]
+) %>% tab_style(
+  style = cell_text(weight = "bold"),
+  locations = cells_column_labels(columns = everything())
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_sim_unsamp.png'))
 
 # Make sampled data:
 mydat3 %>% gt %>% data_color(
@@ -56,27 +73,30 @@ mydat3 %>% gt %>% data_color(
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_samp.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_samp.png'))
 
-# Make unsampled data:
-mydat3 %>% select(-Bycatch) %>% gt %>% data_color(
+# Case1: unsampled data:
+mydat5 %>% select(-Bycatch) %>% gt %>% data_color(
   columns = Trip_id,
   target_columns = everything(),
   palette = colpal[c(3,6)]
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp.png'))
 
-# Make unsampled data:
-mydat3 %>% gt %>% data_color(
+# Make unsampled data with predictions:
+mydat5 %>% gt %>% data_color(
   columns = Trip_id,
   target_columns = everything(),
   palette = colpal[c(3,6)]
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp_pred.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_unsamp_pred.png'))
 
 # Make observers data:
 mydat4 %>% gt %>% data_color(
@@ -86,9 +106,10 @@ mydat4 %>% gt %>% data_color(
 ) %>% tab_style(
   style = cell_text(weight = "bold"),
   locations = cells_column_labels(columns = everything())
-) %>% gtsave(filename = file.path(alt_plot_folder, 'tab_obs.png'))
+) %>% tab_options(column_labels.font.size = px(20)) %>% 
+  gtsave(filename = file.path(alt_plot_folder, 'tab_obs.png'))
 
-# Next step: make the diagram in Mermaid
+# Next step: make the diagram in Mermaid (see make_diagram.txt)
 
 # Next, since I found issues exporting the Mermaid diagram to PNG files directly,
 # I had to export them to SVG files. 
