@@ -26,7 +26,7 @@ source('code/aux_code/parameters_for_plots.R')
 source('code/aux_code/aux_functions.R')
 
 # SELECT YOUR SET TYPE HERE!:
-this_type = 'FOB' # FOB or FSC
+this_type = 'FSC' # FOB or FSC
 
 # First year to make analyses:
 str_yr = 2015
@@ -49,15 +49,25 @@ frac_vector = c(0.05, seq(from = 0.1, to = 0.5, by = 0.1), 0.7, 0.9)
 fob_sp_df = data.frame(sp_levels = c("E. bipinnulata", "Balistidae", "Coryphaenidae", "A. solandri", "Carangidae",
                                     "Carcharhinidae", "M. nigricans", "Sphyrnidae", "Chelonioidea", "Mobulidae",
                                     "Alopiidae", "Lamnidae", "P. glauca"),
-                     sp_type = c(rep("Common", times = 5), rep("Special interest", times = 5),
-                                 rep("Rare", times = 3)) )
+                     sp_type = c(rep("Common", times = 5), 
+                                 rep("Special interest", times = 5),
+                                 rep("Rare", times = 3)),
+                     type_abb = c(rep("(Comm.)", times = 5), 
+                                  rep("(Sp. Int.)", times = 5),
+                                  rep("(Rare)", times = 3))
+                     )
 
 fsc_sp_df = data.frame(sp_levels = c('Carcharhinidae', 'I. albicans',
                                      'Mobulidae', 'M. nigricans', 'Sphyrnidae', 'Chelonioidea', 'Molidae',
                                    'Lamnidae', 'P. glauca'),
-                     sp_type = c(rep("Common", times = 2), rep("Special interest", times = 5),
-                                 rep("Rare", times = 2)) )
+                     sp_type = c(rep("Common", times = 2), 
+                                 rep("Special interest", times = 5),
+                                 rep("Rare", times = 2)),
+                     type_abb = c(rep("(Comm.)", times = 2), 
+                                  rep("(Sp. Int.)", times = 5),
+                                  rep("(Rare)", times = 2))
+                     )
 
 
-if(this_type == 'FOB') sp_df = fob_sp_df
-if(this_type == 'FSC') sp_df = fsc_sp_df
+if(this_type == 'FOB') sp_df = fob_sp_df %>% mutate(sp_label = paste(sp_levels, type_abb))
+if(this_type == 'FSC') sp_df = fsc_sp_df %>% mutate(sp_label = paste(sp_levels, type_abb))

@@ -22,13 +22,16 @@ if(save_res) {
   est_sim = bind_rows(save_sim)
   # Define factors:
   est_sim = est_sim %>% mutate(samp_frac = factor(samp_frac, levels = frac_vector,
-                                        labels = paste0(frac_vector*100, "%")),
-                     sp_name = factor(sp_name, levels = sp_df$sp_levels) )
+                                        labels = paste0(frac_vector*100, "%")) )
   # Save results:
   saveRDS(est_sim, file = file.path(model_folder, "sim_results.rds"))
 } else {
   est_sim = readRDS(file.path(model_folder, "sim_results.rds"))
 }
+
+# Define sp factors
+est_sim = est_sim %>% mutate(sp_name = factor(sp_name, levels = sp_df$sp_levels,
+                                              labels = sp_df$sp_label) )
 
 # -------------------------------------------------------------------------
 # Report convergence rate of model-based estimator:
@@ -149,7 +152,12 @@ agg_yr_data = agg_yr_data %>% mutate(q975 = if_else(q975 < q50, q50, q975))
 # Make this plot by species group:
 all_sp_types = unique(sp_df$sp_type)
 for(k in seq_along(all_sp_types)) {
-  plot_dat_yr = agg_yr_data %>% filter(sp_name %in% (sp_df %>% filter(sp_type == all_sp_types[k]) %>% pull(sp_levels)))
+  plot_dat_yr = agg_yr_data %>% 
+    filter(sp_name %in% (sp_df %>% filter(sp_type == all_sp_types[k]) %>% pull(sp_label)))
+  # Remove category from sp name:
+  plot_dat_yr = plot_dat_yr %>% mutate(sp_name = as.character(sp_name))
+  plot_dat_yr = plot_dat_yr %>% mutate(sp_name = factor(sp_name, levels = sp_df$sp_label,
+                                                        labels = sp_df$sp_levels) )
   
   p3 = ggplot(plot_dat_yr, aes(x=year, y=q50)) +
     geom_line(aes(color = est_type)) +
@@ -170,3 +178,4 @@ for(k in seq_along(all_sp_types)) {
   ggsave(paste0('yr_re_', gsub(pattern = " ", replacement = "", x = all_sp_types[k]), img_type), 
          plot = p3, path = plot_folder, width = img_width , height = 200, units = 'mm', dpi = img_res)
 }
+

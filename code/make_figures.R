@@ -138,7 +138,7 @@ plot_data = plot_data %>% mutate(sp_name = factor(sp_name, levels = fob_sp_df$sp
 
 p1 = ggplot(data = plot_data, aes(x = sp_name, y = freq)) +
   geom_col(aes(fill = sp_type)) +
-  scale_fill_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'Set2') +
   xlab(NULL) + ylab("Frequency in FOB sets (%)") +
   guides(fill = guide_legend(title = "")) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 9),
@@ -154,7 +154,7 @@ plot_data = plot_data %>% mutate(sp_name = factor(sp_name, levels = fsc_sp_df$sp
 
 p2 = ggplot(data = plot_data, aes(x = sp_name, y = freq)) +
   geom_col(aes(fill = sp_type)) +
-  scale_fill_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'Set2') +
   xlab(NULL) + ylab("Frequency in FSC sets (%)") +
   guides(fill = guide_legend(title = "")) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 9),
@@ -170,12 +170,20 @@ ggsave(paste0('freq_sp', img_type), plot = p3, path = alt_plot_folder,
 # Plot grid by set type:
 
 load('data/FOB/MyGrid_obs.RData')
-p1 = ggplot(MyGrid_obs) + geom_sf(fill = 'white')
+obsPoints = readRDS(file.path("data/FOB", 'obsPoints.rds'))
+obsSF = obsPoints %>% st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+p1 = ggplot(MyGrid_obs) + 
+  geom_sf(data = obsSF, size = 1, alpha = 0.25) + ggtitle('FOB') +
+  geom_sf(fill = NA, color = "red") 
 p1 = add_sf_map(p1) 
 p1 = p1 + ggtitle("FOB")
 
 load('data/FSC/MyGrid_obs.RData')
-p2 = ggplot(MyGrid_obs) + geom_sf(fill = 'white')
+obsPoints = readRDS(file.path("data/FSC", 'obsPoints.rds'))
+obsSF = obsPoints %>% st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+p2 = ggplot(MyGrid_obs) + 
+  geom_sf(data = obsSF, size = 1, alpha = 0.25) + ggtitle('FSC') +
+  geom_sf(fill = NA, color = "red") 
 p2 = add_sf_map(p2) 
 p2 = p2 + ggtitle("FSC")
 
@@ -191,19 +199,25 @@ ggsave(paste0('grid', img_type), plot = p3, path = alt_plot_folder,
 # FOB:
 obsPoints = readRDS(file.path("data/FOB", 'obsPoints.rds'))
 obsSF = obsPoints %>% st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
-p1 = ggplot(obsSF) + geom_sf(size = 1, alpha = 0.5) + ggtitle('FOB')
+coords <- st_coordinates(obsSF) |> as.data.frame()
+p1 = ggplot() +
+  geom_bin_2d(data = coords, aes(X, Y, fill = after_stat(count)), bins = 35) +
+  scale_fill_viridis_c(name = "No. of sets") + ggtitle("FOB")
 p1 = add_sf_map(p1)
 
 # FSC:
 obsPoints = readRDS(file.path("data/FSC", 'obsPoints.rds'))
 obsSF = obsPoints %>% st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
-p2 = ggplot(obsSF) + geom_sf(size = 1, alpha = 0.5) + ggtitle('FSC')
+coords <- st_coordinates(obsSF) |> as.data.frame()
+p2 = ggplot() +
+  geom_bin_2d(data = coords, aes(X, Y, fill = after_stat(count)), bins = 35) +
+  scale_fill_viridis_c(name = "No. of sets") + ggtitle("FSC")
 p2 = add_sf_map(p2)
 
 # Merge both plots:
-p3 = grid.arrange(p1, p2, ncol = 2)
+p3 = grid.arrange(p1, p2, ncol = 1)
 ggsave(paste0('sets', img_type), plot = p3, path = alt_plot_folder, 
-       width = img_width , height = 90, units = 'mm', dpi = img_res)
+       width = img_width*0.75, height = 140, units = 'mm', dpi = img_res)
 
 # -------------------------------------------------------------------------
 # Number of observations:

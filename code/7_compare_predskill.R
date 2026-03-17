@@ -22,13 +22,16 @@ if(save_res) {
   est_sim = bind_rows(save_sim)
   # Define factors:
   est_sim = est_sim %>% mutate(samp_frac = factor(samp_frac, levels = frac_vector,
-                                                  labels = paste0(frac_vector*100, "%")),
-                               sp_name = factor(sp_name, levels = sp_df$sp_levels) )
+                                                  labels = paste0(frac_vector*100, "%")) )
   # Save results:
   saveRDS(est_sim, file = file.path(model_folder, "crossval_results.rds"))
 } else {
   est_sim = readRDS(file.path(model_folder, "crossval_results.rds"))
 }
+
+# Define sp factors
+est_sim = est_sim %>% mutate(sp_name = factor(sp_name, levels = sp_df$sp_levels,
+                                              labels = sp_df$sp_label) )
 
 # -------------------------------------------------------------------------
 # Plot mae:
@@ -41,7 +44,7 @@ if(this_type == 'FSC') maxY = 3
 p1 = ggplot(data = plot_dat, aes(x = samp_frac, y = rmse)) +
   geom_boxplot() +
   xlab("Sampling coverage") + ylab("RMSE") +
-  theme(strip.text = element_text(size = 12),
+  theme(strip.text = element_text(size = 11),
         strip.background = element_rect(fill="white"),
         legend.text=element_text(size=12),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 9),
