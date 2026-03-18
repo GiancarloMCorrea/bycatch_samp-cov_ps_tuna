@@ -96,12 +96,12 @@ re_data = re_data %>% pivot_longer(cols = c("re_tot", "re_spt", "re_model"),
 # -------------------------------------------------------------------------
 # Aggregate overall:
 agg_data = re_data %>% group_by(samp_frac, sp_name, est_type) %>%
-  dplyr::summarise(q025 = quantile(re, probs = 0.025), 
+  dplyr::summarise(q025 = quantile(re, probs = 0.05), 
                    q50 = median(re),
-                   q975 = quantile(re, probs = 0.975),
+                   q975 = quantile(re, probs = 0.95),
                    .groups = "drop") 
 agg_data = agg_data %>% mutate(est_type = factor(est_type, levels = c("re_tot", "re_spt", "re_model"),
-                                                 labels = c("Ratio", "Ratio (spatial)", "Model-based")))
+                                                 labels = c("Ratio (global)", "Ratio (spatial)", "Model-based")))
 
 # Fix when mean > q975 and larger than 100%:
 agg_data = agg_data %>% mutate(q975 = if_else(q975 < q50, q50, q975))
@@ -109,7 +109,7 @@ agg_data = agg_data %>% mutate(q975 = if_else(q975 < q50, q50, q975))
 # Count observations per group
 counts = re_data %>%
   group_by(samp_frac, sp_name) %>%
-  summarise( n = n_distinct(sim), y = -105, .groups = "drop")
+  summarise( n = n_distinct(sim), y = -110, .groups = "drop")
 
 # Make plot overall:
 p2 = ggplot(agg_data, aes(x=samp_frac, y=q50, colour=est_type)) +
@@ -122,7 +122,7 @@ p2 = ggplot(agg_data, aes(x=samp_frac, y=q50, colour=est_type)) +
   ) +
   scale_color_manual(values = colorPal) +
   geom_hline(yintercept=0, color=1, linetype='dashed') +
-  coord_cartesian(ylim = c(-110, 110)) +
+  coord_cartesian(ylim = c(-110, 150)) +
   labs(colour = "Estimator") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(size = 9, angle = 90, vjust = 0.5, hjust=1),
@@ -138,12 +138,12 @@ ggsave(paste0('agg_re', img_type), plot = p2, path = plot_folder,
 # -------------------------------------------------------------------------
 # Aggregate by year:
 agg_yr_data = re_data %>% group_by(samp_frac, sp_name, est_type, year) %>%
-  dplyr::summarise(q025 = quantile(re, probs = 0.025), 
+  dplyr::summarise(q025 = quantile(re, probs = 0.05), 
                    q50 = median(re),
-                   q975 = quantile(re, probs = 0.975),
+                   q975 = quantile(re, probs = 0.95),
                    .groups = "drop") 
 agg_yr_data = agg_yr_data %>% mutate(est_type = factor(est_type, levels = c("re_tot", "re_spt", "re_model"),
-                                                 labels = c("Ratio", "Ratio (spatial)", "Model-based")))
+                                                 labels = c("Ratio (global)", "Ratio (spatial)", "Model-based")))
 
 # Fix when mean > q975 and larger than 100%:
 agg_yr_data = agg_yr_data %>% mutate(q975 = if_else(q975 < q50, q50, q975))
