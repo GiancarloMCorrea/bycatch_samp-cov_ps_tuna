@@ -53,4 +53,6 @@ model/FOB/crossval
 model/FOB/sim_est
 model/FSC/crossval
 model/FSC/sim_est
+model/FOB/obs_sim_data
+model/FSC/obs_sim_data
 data/
