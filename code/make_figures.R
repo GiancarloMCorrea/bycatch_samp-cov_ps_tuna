@@ -120,11 +120,24 @@ mydat4 %>% gt %>% data_color(
 
 img = image_read_pdf(file.path(alt_plot_folder, "case1.pdf"))
 img = image_trim(img) 
-image_write(img, file.path(alt_plot_folder, "case1.png"))
+image_write(img, file.path(alt_plot_folder, paste0("case1", img_type)), 
+            density = paste0(img_res, "x", img_res))
 
 img = image_read_pdf(file.path(alt_plot_folder, "case2.pdf"))
 img = image_trim(img) 
-image_write(img, file.path(alt_plot_folder, "case2.png"))
+image_write(img, file.path(alt_plot_folder, paste0("case2", img_type)), 
+            density = paste0(img_res, "x", img_res))
+
+
+# -------------------------------------------------------------------------
+# Change image type of mesh figures for journal:
+mesh_img = image_read(file.path(alt_plot_folder, "FOB", "map_mesh_obs.png"))
+image_write(mesh_img, file.path(alt_plot_folder, paste0("Figure_S4", img_type)), 
+            density = paste0(img_res, "x", img_res))
+
+mesh_img = image_read(file.path(alt_plot_folder, "FSC", "map_mesh_obs.png"))
+image_write(mesh_img, file.path(alt_plot_folder, paste0("Figure_S5", img_type)), 
+            density = paste0(img_res, "x", img_res))
 
 # -------------------------------------------------------------------------
 # Make figure to compare % presence in sets by selected species:

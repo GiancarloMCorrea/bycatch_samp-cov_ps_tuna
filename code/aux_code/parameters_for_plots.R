@@ -13,8 +13,8 @@ xBreaks = seq(from = -60, to = 20, by = 20)
 yBreaks = seq(from = -40, to = 40, by = 20)
 
 # Define image parameters:
-img_type = '.png'
-img_res = 300 # dpi
+img_type = '.tiff' # use tiff when MS accepted, use png for MS draft
+img_res = 650 # dpi
 img_width = 170 # max width image
 
 # Theme for ggplot:
